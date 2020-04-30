@@ -8,32 +8,36 @@ import (
 
 func TestRowAddSmall(t *testing.T) {
 
-	r := Row{}
+	r := NewRow(3, 2)
 
 	r = r.Add(Entry{
-		Size: SMALL,
+		Size: Small,
 	})
 
 	expected := Row{
-		Coverage: [2][3]bool{[3]bool{true, false, false}, [3]bool{false, false, false}},
-		Covered:  1,
+		Coverage: [][]bool{[]bool{true, false, false}, []bool{false, false, false}},
+		C:        1,
+		W:        3,
+		H:        2,
 		Entries: []Entry{
-			Entry{Size: SMALL, X: 0, Y: 0},
+			Entry{Size: Small, X: 0, Y: 0},
 		},
 	}
 
 	assert.Equal(t, expected, r)
 
 	r = r.Add(Entry{
-		Size: SMALL,
+		Size: Small,
 	})
 
 	expected = Row{
-		Coverage: [2][3]bool{[3]bool{true, true, false}, [3]bool{false, false, false}},
-		Covered:  2,
+		Coverage: [][]bool{[]bool{true, true, false}, []bool{false, false, false}},
+		C:        2,
+		W:        3,
+		H:        2,
 		Entries: []Entry{
-			Entry{Size: SMALL, X: 0, Y: 0},
-			Entry{Size: SMALL, X: 1, Y: 0},
+			Entry{Size: Small, X: 0, Y: 0},
+			Entry{Size: Small, X: 1, Y: 0},
 		},
 	}
 
@@ -42,32 +46,36 @@ func TestRowAddSmall(t *testing.T) {
 
 func TestRowAddMedium(t *testing.T) {
 
-	r := Row{}
+	r := NewRow(3, 2)
 
 	r = r.Add(Entry{
-		Size: MEDIUM,
+		Size: Medium,
 	})
 
 	expected := Row{
-		Coverage: [2][3]bool{[3]bool{true, false, false}, [3]bool{true, false, false}},
-		Covered:  2,
+		Coverage: [][]bool{[]bool{true, false, false}, []bool{true, false, false}},
+		C:        2,
+		W:        3,
+		H:        2,
 		Entries: []Entry{
-			Entry{Size: MEDIUM, X: 0, Y: 0},
+			Entry{Size: Medium, X: 0, Y: 0},
 		},
 	}
 
 	assert.Equal(t, expected, r)
 
 	r = r.Add(Entry{
-		Size: MEDIUM,
+		Size: Medium,
 	})
 
 	expected = Row{
-		Coverage: [2][3]bool{[3]bool{true, true, false}, [3]bool{true, true, false}},
-		Covered:  4,
+		Coverage: [][]bool{[]bool{true, true, false}, []bool{true, true, false}},
+		C:        4,
+		W:        3,
+		H:        2,
 		Entries: []Entry{
-			Entry{Size: MEDIUM, X: 0, Y: 0},
-			Entry{Size: MEDIUM, X: 1, Y: 0},
+			Entry{Size: Medium, X: 0, Y: 0},
+			Entry{Size: Medium, X: 1, Y: 0},
 		},
 	}
 
@@ -76,73 +84,143 @@ func TestRowAddMedium(t *testing.T) {
 
 func TestRowAddLarge(t *testing.T) {
 
-	r := Row{}
+	r := NewRow(3, 2)
 
-	r = r.Add(Entry{Size: LARGE})
+	r = r.Add(Entry{Size: Large})
 
 	expected := Row{
-		Coverage: [2][3]bool{[3]bool{true, true, false}, [3]bool{true, true, false}},
-		Covered:  4,
+		Coverage: [][]bool{[]bool{true, true, false}, []bool{true, true, false}},
+		C:        4,
+		W:        3,
+		H:        2,
 		Entries: []Entry{
-			Entry{Size: LARGE, X: 0, Y: 0},
+			Entry{Size: Large, X: 0, Y: 0},
 		},
 	}
 
 	assert.Equal(t, expected, r)
 
-	r = r.Add(Entry{Size: MEDIUM})
+	r = r.Add(Entry{Size: Medium})
 
 	expected = Row{
-		Coverage: [2][3]bool{[3]bool{true, true, true}, [3]bool{true, true, true}},
-		Covered:  6,
+		Coverage: [][]bool{[]bool{true, true, true}, []bool{true, true, true}},
+		C:        6,
+		W:        3,
+		H:        2,
 		Entries: []Entry{
-			Entry{Size: LARGE, X: 0, Y: 0},
-			Entry{Size: MEDIUM, X: 2, Y: 0},
+			Entry{Size: Large, X: 0, Y: 0},
+			Entry{Size: Medium, X: 2, Y: 0},
 		},
 	}
 
 	assert.Equal(t, expected, r)
 }
 
-func TestRowPack(t *testing.T) {
-	r := Row{}
+func TestRowAddXLarge(t *testing.T) {
+
+	r := NewRow(3, 3)
+
+	r = r.Add(Entry{Size: XLarge})
+
+	expected := Row{
+		Coverage: [][]bool{[]bool{true, true, false}, []bool{true, true, false}, []bool{true, true, false}},
+		C:        6,
+		W:        3,
+		H:        3,
+		Entries: []Entry{
+			Entry{Size: XLarge, X: 0, Y: 0},
+		},
+	}
+
+	assert.Equal(t, expected, r)
+
+	r = r.Add(Entry{Size: Medium})
+
+	expected = Row{
+		Coverage: [][]bool{[]bool{true, true, true}, []bool{true, true, true}, []bool{true, true, false}},
+		C:        8,
+		W:        3,
+		H:        3,
+		Entries: []Entry{
+			Entry{Size: XLarge, X: 0, Y: 0},
+			Entry{Size: Medium, X: 2, Y: 0},
+		},
+	}
+
+	assert.Equal(t, expected, r)
+}
+
+func TestRowPack3x3(t *testing.T) {
+	r := NewRow(3, 3)
 
 	es := []Entry{
-		Entry{Size: LARGE},
-		Entry{Size: SMALL},
-		Entry{Size: MEDIUM},
-		Entry{Size: SMALL},
-		Entry{Size: LARGE},
-		Entry{Size: SMALL},
-		Entry{Size: MEDIUM},
-		Entry{Size: SMALL},
-		Entry{Size: LARGE},
-		Entry{Size: SMALL},
-		Entry{Size: MEDIUM},
-		Entry{Size: SMALL},
+		Entry{Size: Small},
+		Entry{Size: XLarge},
+		Entry{Size: Medium},
+	}
+
+	q := []Entry{}
+
+	r, es = r.Pack(es)
+
+	expected := Row{
+		Coverage: [][]bool{[]bool{true, true, true}, []bool{true, true, true}, []bool{true, true, true}},
+		C:        9,
+		W:        3,
+		H:        3,
+		Entries: []Entry{
+			Entry{Size: Small, X: 0, Y: 0},
+			Entry{Size: XLarge, X: 1, Y: 0},
+			Entry{Size: Medium, X: 0, Y: 1},
+		},
+	}
+
+	assert.Equal(t, expected, r)
+	assert.Equal(t, q, es)
+
+}
+
+func TestRowPack(t *testing.T) {
+	r := NewRow(3, 2)
+
+	es := []Entry{
+		Entry{Size: Large},
+		Entry{Size: Small},
+		Entry{Size: Medium},
+		Entry{Size: Small},
+		Entry{Size: Large},
+		Entry{Size: Small},
+		Entry{Size: Medium},
+		Entry{Size: Small},
+		Entry{Size: Large},
+		Entry{Size: Small},
+		Entry{Size: Medium},
+		Entry{Size: Small},
 	}
 
 	q := []Entry{
-		Entry{Size: MEDIUM},
-		Entry{Size: LARGE},
-		Entry{Size: SMALL},
-		Entry{Size: MEDIUM},
-		Entry{Size: SMALL},
-		Entry{Size: LARGE},
-		Entry{Size: SMALL},
-		Entry{Size: MEDIUM},
-		Entry{Size: SMALL},
+		Entry{Size: Medium},
+		Entry{Size: Large},
+		Entry{Size: Small},
+		Entry{Size: Medium},
+		Entry{Size: Small},
+		Entry{Size: Large},
+		Entry{Size: Small},
+		Entry{Size: Medium},
+		Entry{Size: Small},
 	}
 
 	r, es = r.Pack(es)
 
 	expected := Row{
-		Coverage: [2][3]bool{[3]bool{true, true, true}, [3]bool{true, true, true}},
-		Covered:  6,
+		Coverage: [][]bool{[]bool{true, true, true}, []bool{true, true, true}},
+		C:        6,
+		W:        3,
+		H:        2,
 		Entries: []Entry{
-			Entry{Size: LARGE, X: 0, Y: 0},
-			Entry{Size: SMALL, X: 2, Y: 0},
-			Entry{Size: SMALL, X: 2, Y: 1},
+			Entry{Size: Large, X: 0, Y: 0},
+			Entry{Size: Small, X: 2, Y: 0},
+			Entry{Size: Small, X: 2, Y: 1},
 		},
 	}
 
@@ -151,13 +229,13 @@ func TestRowPack(t *testing.T) {
 }
 
 func BenchmarkPack(b *testing.B) {
-	r := Row{}
+	r := NewRow(3, 2)
 
 	es := []Entry{
-		Entry{Size: LARGE},
-		Entry{Size: SMALL},
-		Entry{Size: MEDIUM},
-		Entry{Size: SMALL},
+		Entry{Size: Large},
+		Entry{Size: Small},
+		Entry{Size: Medium},
+		Entry{Size: Small},
 	}
 
 	for n := 0; n < b.N; n++ {
